@@ -1,5 +1,6 @@
 
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, DATETIME, func
+import datetime
+from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, DATETIME, func, text
 from sqlalchemy.orm import mapped_column, Mapped
 
 
@@ -12,8 +13,16 @@ from typing import Annotated
 intpk = Annotated[int, mapped_column(primary_key=True)]
 name_50 = Annotated[str, 50]
 
+created_at = Annotated[datetime.datetime, mapped_column(server_default=text("TIMEZONE('utc', now())"))]
+updated_at = Annotated[datetime.datetime, mapped_column(
+        server_default=text("TIMEZONE('utc', now())"),
+        onupdate=datetime.datetime.utcnow,
+    )]
+
+metadata_obj = MetaData()
+
 class Owner(Base):
-    __tablename__ = "owners"
+    __tablename__ = "owner"
 
     id: Mapped[intpk]
     username: Mapped[name_50]
@@ -27,7 +36,7 @@ class Dog(Base):
 
     id: Mapped[intpk]
     name: Mapped[name_50]
-    owner: Mapped[int] = mapped_column(ForeignKey("owners.id", ondelete="CASCADE"))
+    owner: Mapped[int] = mapped_column(ForeignKey("owner.id", ondelete="CASCADE"))
 
 # dogs_table = Table(
 #     "dogs",
