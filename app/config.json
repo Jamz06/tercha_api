@@ -1,0 +1,17 @@
+{
+    "main": {
+
+        "LOG_DIR": "/var/log/api/tercha/",
+        "LOG_FILENAME": "main.log",
+        "ROOT_PREFIX": "/",
+        "debug": true
+    },
+    "db": {
+        "driver": "mariadb+mariadbconnector",
+        "host": "127.0.0.1",
+        "user": "root",
+        "password": "123",
+        "database": "tercha_bot",
+        "port": 3305
+    }
+}
