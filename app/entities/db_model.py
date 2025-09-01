@@ -107,7 +107,7 @@ class TaskStatus(Base):
 
 
 class Task(Base):
-    __tablename__ = "status"
+    __tablename__ = "task"
 
     id: Mapped[intpk]
     dog: Mapped[int] = mapped_column(ForeignKey("dog.id"))

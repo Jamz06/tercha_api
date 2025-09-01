@@ -56,13 +56,25 @@ class Orm:
                 {"name": "Тестовая 3 Красная", "description": "Тест3 самая сложная", "points": 100, "card_type_id": 3},
                 {"name": "Тестовая 4 Зеленая", "description": "Тест4 легко, но много баллов", "points": 50, "card_type_id": 1},
             ]
-
+            statuses = [
+                {"name": "Открыта", "task_closed": False},
+                {"name": "Закрыта", "task_closed": True},
+            ]
+            tasks = [
+                {"dog": 1, "card": 1, "status": 1},
+                {"dog": 1, "card": 2, "status": 1},
+                {"dog": 2, "card": 1, "status": 1},
+                {"dog": 3, "card": 1, "status": 1},
+                {"dog": 3, "card": 1, "status": 1},
+            ]
 
             session.execute(insert(Owner).values(owners))
             session.execute(insert(Dog).values(dogs))
             session.execute(insert(Sport).values(sport))
             session.execute(insert(CardType).values(card_types))
             session.execute(insert(Card).values(cards))
+            session.execute(insert(TaskStatus).values(statuses))
+            session.execute(insert(Task).values(tasks))
 
             
             session.commit()

@@ -1,9 +1,9 @@
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, aliased
 
 from database.database import get_db, session_factory
 # from database.models import dogs_table
-from entities.db_model import Dog, Owner, Sport, Task
+from entities.db_model import Card, Dog, Owner, Sport, Task, TaskStatus
 from entities import model
 
 def get_dog_by_id(id: int):
@@ -46,8 +46,46 @@ def get_cards_by_sport(sport_id:int):
         Получить доступные карточки из вида спорта
      '''
 
+def get_owner_tasks(owner_id: int):
+    '''
+        Получить все задачи пользователя по owner_id
+    '''
 
-def get_dog_tasks(dog_id: int, status_id: int)->Task:
+    t = aliased(Task)
+    c = aliased(Card)
+    d = aliased(Dog)
+    s = aliased(TaskStatus)
+
+    # В следующий раз проще обычный запрос написать :)
+    query = (
+        select(
+            t.id,
+            d.name,
+            c.name,
+            s.name
+        )
+        .outerjoin(c, c.id == t.card)   # LEFT JOIN card c ON c.id = t.card
+        .join(d, t.dog == d.id)          # INNER JOIN dog d ON t.dog = d.id
+        .join(s, s.id == t.status)       # INNER JOIN task_status s ON s.id = t.status
+        .filter(
+            d.owner_id == owner_id,      # :owner_id parameter
+            s.task_closed == False       # s.task_closed = 'False'
+        )
+    )
+
+    with session_factory() as session:
+        res = session.execute(query)
+        result = res.all()
+        
+        # Времени мало, потом мб че поизящнее придумаю
+        # Развернуть в список моделей задач, для ответа
+        tasks = [model.TaskDTO(id=row[0], dog=row[1], card=row[2], status=row[3]) for row in result]
+    return tasks
+
+
+
+
+def get_dog_tasks(dog_id: int, status_id: int):
      '''
         Получить задачи по собаке, со статусом
      '''
