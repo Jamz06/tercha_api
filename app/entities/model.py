@@ -4,7 +4,7 @@ from pydantic import BaseModel
 class DogDTO(BaseModel):
     id: int
     name: str
-    owner: int
+    owner_id: int
     model_config = {
         "json_schema_extra": {
             "example": {
@@ -15,3 +15,9 @@ class DogDTO(BaseModel):
             }
         }
     }
+
+class OwnerDTO(BaseModel):
+    id: int
+    username: str
+    t_chat_id: int
+    dogs: list["DogDTO"]
