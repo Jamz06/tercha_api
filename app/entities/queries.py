@@ -1,17 +1,13 @@
-from sqlalchemy import select
+from sqlalchemy import select, and_
 from sqlalchemy.orm import selectinload, aliased
 
 from database.database import get_db, session_factory
 # from database.models import dogs_table
 from entities.db_model import Card, Dog, Owner, Sport, Task, TaskStatus
+from entities.model_utils import DbAnswers
 from entities import model
 
-def get_dog_by_id(id: int):
-    with session_factory() as session:
-        dog = session.query(Dog).filter(Dog.id  == id).first()
-        dog = model.DogDTO.model_validate(dog, from_attributes=True)
-    return dog
-
+# ----------------------------------- OWNER ---------------------------------- #
 def get_owner_with_dogs(chat_id: int)->Owner:
         '''
             Получить владельцев с собаками
@@ -29,6 +25,67 @@ def get_owner_with_dogs(chat_id: int)->Owner:
             # т.к. все равно придут кортежи с одним объектом
             result = res.scalars().first()
         return result
+
+def insert_owner(chat_id: int, username:str)->DbAnswers:
+    '''
+    Создать владельца собаки
+    '''
+    result = DbAnswers.ERROR
+    
+    try:
+        with session_factory() as session:
+            exists = session.query(Owner).where(Owner.t_chat_id == chat_id).first()
+            if not exists:
+                owner = Owner(t_chat_id=chat_id, username=username)
+                session.add(owner)
+                session.commit()
+                result = DbAnswers.SUCCESS
+            else:
+                result = DbAnswers.DUP_VAL
+
+    except Exception as err:
+        result = DbAnswers.ERROR
+        # Записать ошибку в лог
+
+    return result
+          
+
+# ------------------------------------ DOG ----------------------------------- #
+def get_dog_by_id(id: int):
+    with session_factory() as session:
+        dog = session.query(Dog).filter(Dog.id  == id).first()
+        dog = model.DogDTO.model_validate(dog, from_attributes=True)
+    return dog
+
+def insert_dog(name: str, owner: int):
+    result = DbAnswers.ERROR
+    
+    try:
+        with session_factory() as session:
+            exists = (
+                session.query(Dog).where(and_(
+                        Dog.name == name,
+                        Dog.owner_id == owner
+                    )
+                )
+            .first()
+            )
+            if not exists:
+                dog = Dog(name=name, owner_id=owner)
+                session.add(dog)
+                session.commit()
+                result = DbAnswers.SUCCESS
+            else:
+                result = DbAnswers.DUP_VAL
+
+    except Exception as err:
+        result = DbAnswers.ERROR
+        # Записать ошибку в лог
+
+    return result
+# ----------------------------------- TASK ----------------------------------- #
+
+
         
 def get_sports():
     '''

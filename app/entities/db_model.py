@@ -33,7 +33,7 @@ class Owner(Base):
     username: Mapped[name_50]
     # chatid для телеграм
     t_chat_id: Mapped[int] = mapped_column(
-        BigInteger
+        BigInteger, unique=True
     )
 
     dogs: Mapped[list["Dog"]] = relationship(

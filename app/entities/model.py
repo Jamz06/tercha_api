@@ -1,5 +1,11 @@
 from pydantic import BaseModel
 
+
+class BaseResponse(BaseModel):
+    success: bool
+
+
+
 # http ansewrs Заглушка, пока с ответами не определился
 class DogDTO(BaseModel):
     id: int
