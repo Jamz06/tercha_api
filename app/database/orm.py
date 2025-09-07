@@ -32,13 +32,13 @@ class Orm:
             ]
             # dog1 = Dog(name='Terra', owner_id=1)
             dogs = [
-                {"name": "Терра", "owner_id": 1},
-                {"name": "Мышь", "owner_id": 1},
-                {"name": "Чиза", "owner_id": 1},
-                {"name": "Эска", "owner_id": 1},
-                {"name": "Гречка", "owner_id": 1},
-                {"name": "Макс", "owner_id": 2},
-                {"name": "Рульф", "owner_id": 2}
+                {"name": "Терра", "owner_id": 1223314},
+                {"name": "Мышь", "owner_id": 1223314},
+                {"name": "Чиза", "owner_id": 1223314},
+                {"name": "Эска", "owner_id": 1223314},
+                {"name": "Гречка", "owner_id": 1223314},
+                {"name": "Макс", "owner_id": 122332},
+                {"name": "Рульф", "owner_id": 122332}
             ]
             sport = [
                 {"name": "Тестовый спорт"}
@@ -86,7 +86,7 @@ class Orm:
         '''
 
         with session_factory() as session:
-            query = select(Owner).filter(Owner.id == 1).options(selectinload(Owner.dogs))
+            query = select(Owner).filter(Owner.t_chat_id == 1223314).options(selectinload(Owner.dogs))
             # Посмотреть какой запрос составился
             print(query.compile())
 

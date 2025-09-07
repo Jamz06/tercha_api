@@ -26,7 +26,7 @@ def get_owner_with_dogs(chat_id: int)->Owner:
             result = res.scalars().first()
         return result
 
-def insert_owner(chat_id: int, username:str)->DbAnswers:
+def insert_owner(chat_id: int, username:str, second_name: str|None)->DbAnswers:
     '''
     Создать владельца собаки
     '''
@@ -36,7 +36,7 @@ def insert_owner(chat_id: int, username:str)->DbAnswers:
         with session_factory() as session:
             exists = session.query(Owner).where(Owner.t_chat_id == chat_id).first()
             if not exists:
-                owner = Owner(t_chat_id=chat_id, username=username)
+                owner = Owner(t_chat_id=chat_id, username=username, second_name=second_name)
                 session.add(owner)
                 session.commit()
                 result = DbAnswers.SUCCESS
@@ -85,25 +85,7 @@ def insert_dog(name: str, owner: int):
     return result
 # ----------------------------------- TASK ----------------------------------- #
 
-
-        
-def get_sports():
-    '''
-        Получить виды спорта
-    '''
-    # ! Пока предпологается, что видов спорта до 5, поэтому нам не нужна фильтрация
-    with session_factory() as session:
-        query = select(Sport)
-        res = session.execute(query)
-        result = res.scalars().all()
-    return result
-
-def get_cards_by_sport(sport_id:int):
-     '''
-        Получить доступные карточки из вида спорта
-     '''
-
-def get_owner_tasks(owner_id: int):
+def get_owner_tasks(t_chat_id: int):
     '''
         Получить все задачи пользователя по owner_id
     '''
@@ -125,7 +107,7 @@ def get_owner_tasks(owner_id: int):
         .join(d, t.dog == d.id)          # INNER JOIN dog d ON t.dog = d.id
         .join(s, s.id == t.status)       # INNER JOIN task_status s ON s.id = t.status
         .filter(
-            d.owner_id == owner_id,      # :owner_id parameter
+            d.owner_id == t_chat_id,      # :owner_id parameter
             s.task_closed == False       # s.task_closed = 'False'
         )
     )
@@ -139,12 +121,31 @@ def get_owner_tasks(owner_id: int):
         tasks = [model.TaskDTO(id=row[0], dog=row[1], card=row[2], status=row[3]) for row in result]
     return tasks
 
-
-
-
 def get_dog_tasks(dog_id: int, status_id: int):
      '''
         Получить задачи по собаке, со статусом
      '''
      pass
+
+
+# ---------------------------------------------------------------------------- #
+        
+def get_sports():
+    '''
+        Получить виды спорта
+    '''
+    # ! Пока предпологается, что видов спорта до 5, поэтому нам не нужна фильтрация
+    with session_factory() as session:
+        query = select(Sport)
+        res = session.execute(query)
+        result = res.scalars().all()
+    return result
+
+def get_cards_by_sport(sport_id:int):
+     '''
+        Получить доступные карточки из вида спорта
+     '''
+
+
+
 

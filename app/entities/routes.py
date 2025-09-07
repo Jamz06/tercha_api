@@ -54,7 +54,7 @@ async def create_owner(
     """
     response = model.BaseResponse(success=False)
 
-    result = queries.insert_owner(chat_id=chat_id, username=first_name)  
+    result = queries.insert_owner(chat_id=chat_id, username=first_name, second_name=second_name)  
     
     
     if result == DbAnswers.DUP_VAL:
@@ -99,7 +99,7 @@ async def get_dog(dog_id: int)->model.DogDTO:
 async def create_dog(
     
     name: str,
-    owner: str,
+    owner_chat_id: int,
 
 )->model.BaseResponse:
     """
@@ -107,7 +107,7 @@ async def create_dog(
     """
     response = model.BaseResponse(success=False)
 
-    result = queries.insert_dog(name, owner)
+    result = queries.insert_dog(name, owner_chat_id)
     
 
     if result == DbAnswers.DUP_VAL:

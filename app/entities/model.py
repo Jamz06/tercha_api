@@ -22,7 +22,6 @@ class DogDTO(BaseModel):
     }
 
 class OwnerDTO(BaseModel):
-    id: int
     username: str
     t_chat_id: int
 

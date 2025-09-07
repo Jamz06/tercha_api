@@ -12,6 +12,6 @@
         "user": "tercha",
         "password": "123",
         "database": "tercha_bot",
-        "port": 5431
+        "port": 5432
     }
 }

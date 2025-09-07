@@ -14,3 +14,6 @@ try:
 except Exception as e:
     print(e)
     sys.exit(1)
+
+if os.environ.get("API_DB_HOST"):
+    config['db']['host'] = os.environ.get("API_DB_HOST")

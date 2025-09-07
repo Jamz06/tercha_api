@@ -12,4 +12,8 @@ COPY ./app /app
 
 RUN mkdir -p /var/log/api/tercha_api
 
+# init_db
+
+
+
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]

@@ -29,12 +29,10 @@ metadata_obj = MetaData()
 class Owner(Base):
     __tablename__ = "owner"
 
-    id: Mapped[intpk]
+    t_chat_id: Mapped[intpk] # В pgsq integer 4 байта в телеге 32 бита(судя по документации), так что берем integer
     username: Mapped[name_50]
-    # chatid для телеграм
-    t_chat_id: Mapped[int] = mapped_column(
-        BigInteger, unique=True
-    )
+    second_name: Mapped[name_50]
+    
 
     dogs: Mapped[list["Dog"]] = relationship(
         back_populates="owner"
@@ -51,7 +49,8 @@ class Dog(Base):
 
     id: Mapped[intpk]
     name: Mapped[name_50]
-    owner_id: Mapped[int] = mapped_column(ForeignKey("owner.id", ondelete="CASCADE"))
+    # Оставил owner_id для совместимости с предыдущей моделью owner
+    owner_id: Mapped[int] = mapped_column(ForeignKey("owner.t_chat_id", ondelete="CASCADE"))
     owner: Mapped["Owner"] = relationship(
         back_populates="dogs"
     )
@@ -113,7 +112,7 @@ class Task(Base):
     dog: Mapped[int] = mapped_column(ForeignKey("dog.id"))
     card: Mapped[int] = mapped_column(ForeignKey("card.id"))
     status: Mapped[int] = mapped_column(ForeignKey("task_status.id"))
-    who_rated: Mapped[Optional[int]] = mapped_column(ForeignKey("owner.id"))
+    who_rated: Mapped[Optional[int]] = mapped_column(ForeignKey("owner.t_chat_id"))
     rate: Mapped[Optional[int]]
     start_date: Mapped[created_at]
     end_time: Mapped[Optional[datetime.datetime]]
